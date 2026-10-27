@@ -20,14 +20,19 @@ ARCHIVE = ROOT / 'archive'
 OUT = ROOT / 'web'
 TZ = timezone(timedelta(hours=8))
 
-SECTIONS = ['半导体', '光通信', '物理AI', 'AI算力与资本', '值得追问的线索']
+SECTIONS = ['全球政经', '半导体', '光通信', '物理AI', 'AI算力与资本', '值得追问的线索']
 SECTION_COLORS = {
+    '全球政经': '#234E70',
     '半导体': '#8C1F18',
     '光通信': '#1F4E79',
     '物理AI': '#1E5E3E',
     'AI算力与资本': '#9A6B1F',
     '值得追问的线索': '#6B4FA0',
 }
+BOARDS = [
+    ('板块一 · 全球政经速递', ['全球政经']),
+    ('板块二 · 行业动态情报', ['半导体', '光通信', '物理AI', 'AI算力与资本']),
+]
 
 ITEM_RE = re.compile(r'^- \*\*(.+?)\*\*｜(.*?)｜(.*?)｜(\S+)(?:｜(.*))?$')
 DAY_TITLE_RE = re.compile(r'^# (.+)$')
@@ -64,6 +69,8 @@ def parse_day(md_path):
                 'url': url.strip(),
                 'tags': [x.strip() for x in (tags or '').split(',') if x.strip()],
             })
+        elif line.startswith('- ') and cur == '值得追问的线索':
+            sections[cur].append({'clue': line[2:].strip()})
     return {'date': date, 'title': title, 'sections': sections, 'highlights': highlights}
 
 def esc(s):
@@ -81,6 +88,8 @@ def main():
     for d in parsed:
         for sec, items in d['sections'].items():
             for it in items:
+                if not isinstance(it, dict) or 'tags' not in it:
+                    continue
                 for tg in it['tags']:
                     all_tags[tg] = all_tags.get(tg, 0) + 1
     top_tags = sorted(all_tags.items(), key=lambda kv: (-kv[1], kv[0]))[:30]
@@ -107,36 +116,48 @@ def main():
                 body.append(f'<li>{esc(h)}</li>')
             body.append('</ul></section>')
 
-        for sec in SECTIONS:
-            items = d['sections'].get(sec)
-            if not items:
+        for board_name, board_secs in BOARDS:
+            board_parts = [(s, d['sections'].get(s)) for s in board_secs]
+            board_parts = [(s, its) for s, its in board_parts if its]
+            if not board_parts:
                 continue
-            color = SECTION_COLORS.get(sec, '#333')
-            body.append(f'<section class="block" data-sec="{esc(sec)}">')
-            body.append(f'<h3 style="color:{color};border-color:{color}">{esc(sec)}'
-                        f'<span class="sec-count">{len(items)}</span></h3>')
-            body.append('<ul class="items">')
-            for i, it in enumerate(items):
-                total_items += 1
-                anchor = f'd-{d["date"]}-{sec}-{i}'
-                tag_html = ''.join(
-                    f'<button class="tag" data-tag="{esc(t)}">{esc(t)}</button>' for t in it['tags']
-                )
-                tag_attr = ','.join(it['tags'])
-                search_blob = esc(' '.join([it['title'], it['summary'], it['source'], tag_attr]))
-                body.append(
-                    f'<li class="item" id="{anchor}" data-sec="{esc(sec)}" data-tags="{esc(tag_attr)}" '
-                    f'data-search="{search_blob}">'
-                    f'<div class="item-head"><a class="item-title" href="{esc(it["url"])}" target="_blank" rel="noopener">{esc(it["title"])}</a>'
-                    f'<a class="anchor" href="#{anchor}" title="复制本条链接">#</a></div>'
-                    f'<p class="summary">{esc(it["summary"])}</p>'
-                    f'<div class="meta"><span class="src">{esc(it["source"])}</span>'
-                    f'<a class="orig" href="{esc(it["url"])}" target="_blank" rel="noopener">阅读原文 ↗</a>'
-                    f'{f"<span class=\"tags\">{tag_html}</span>" if tag_html else ""}</div>'
-                    f'</li>'
-                )
-                if is_today or len(rss_items) < 40:
-                    rss_items.append((d, it))
+            body.append(f'<div class="board-banner">{esc(board_name)}</div>')
+            for sec, items in board_parts:
+                color = SECTION_COLORS.get(sec, '#333')
+                body.append(f'<section class="block" data-sec="{esc(sec)}">')
+                body.append(f'<h3 style="color:{color};border-color:{color}">{esc(sec)}'
+                            f'<span class="sec-count">{len(items)}</span></h3>')
+                body.append('<ul class="items">')
+                for i, it in enumerate(items):
+                    total_items += 1
+                    anchor = f'd-{d["date"]}-{sec}-{i}'
+                    tag_html = ''.join(
+                        f'<button class="tag" data-tag="{esc(t)}">{esc(t)}</button>' for t in it['tags']
+                    )
+                    tag_attr = ','.join(it['tags'])
+                    search_blob = esc(' '.join([it['title'], it['summary'], it['source'], tag_attr]))
+                    body.append(
+                        f'<li class="item" id="{anchor}" data-sec="{esc(sec)}" data-tags="{esc(tag_attr)}" '
+                        f'data-search="{search_blob}">'
+                        f'<div class="item-head"><a class="item-title" href="{esc(it["url"])}" target="_blank" rel="noopener">{esc(it["title"])}</a>'
+                        f'<a class="anchor" href="#{anchor}" title="复制本条链接">#</a></div>'
+                        f'<p class="summary">{esc(it["summary"])}</p>'
+                        f'<div class="meta"><span class="src">{esc(it["source"])}</span>'
+                        f'<a class="orig" href="{esc(it["url"])}" target="_blank" rel="noopener">阅读原文 ↗</a>'
+                        f'{f"<span class=\"tags\">{tag_html}</span>" if tag_html else ""}</div>'
+                        f'</li>'
+                    )
+                    if is_today or len(rss_items) < 40:
+                        rss_items.append((d, it))
+                body.append('</ul></section>')
+        # 值得追问的线索：纯文本列表，无链接
+        clues = [c['clue'] for c in d['sections'].get('值得追问的线索', []) if 'clue' in c]
+        if clues:
+            body.append('<section class="block clues" data-sec="值得追问的线索">'
+                        '<h3 style="color:#6B4FA0;border-color:#6B4FA0">值得追问的线索'
+                        f'<span class="sec-count">{len(clues)}</span></h3><ul class="clue-list">')
+            for c in clues:
+                body.append(f'<li>{esc(c)}</li>')
             body.append('</ul></section>')
         body.append('</article>')
 
@@ -150,10 +171,10 @@ def main():
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="行业情报日报：半导体 / 光通信 / 物理AI / AI算力与资本，每日更新，公开来源。">
-<meta property="og:title" content="行业情报日报 · 半导体/光通信/物理AI/AI算力与资本">
-<meta property="og:description" content="每日行业情报追踪与回溯，仅基于公开信息。">
-<title>行业情报日报 · 半导体 / 光通信 / 物理AI / AI算力与资本</title>
+<meta name="description" content="个人行业情报日报：全球政经速递 + 行业动态情报（半导体/光通信/物理AI/AI算力与资本），每日公开信息精选。">
+<meta property="og:title" content="行业情报日报 · 全球政经/行业动态情报">
+<meta property="og:description" content="板块一：全球政经速递（财新/官媒/BBC/WaPo等公开渠道）；板块二：行业动态情报（券商投研摘要/企业公告）。每日更新。">
+<title>行业情报日报 · 全球政经 / 行业动态情报</title>
 <link rel="alternate" type="application/rss+xml" title="行业情报日报" href="feed.xml">
 <style>
 :root {{
@@ -238,6 +259,13 @@ header.masthead {{
 .tag em {{ font-style: normal; opacity: .65; font-size: 11px; }}
 .tag.on {{ background: var(--chip-on); color: #FCFAF4; border-color: var(--chip-on); }}
 
+.board-banner {{
+  font-size: 17px; font-weight: 800; color: var(--head); letter-spacing: 5px;
+  border-top: 3px double var(--accent); border-bottom: 1px solid var(--line);
+  padding: 9px 0 7px; margin: 22px 0 14px; text-align: center;
+}}
+.clue-list li {{ font-size: 13.5px; color: var(--ink); opacity: .88; margin: 0 0 7px 20px; list-style: '→  '; }}
+
 article.day {{
   background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
   padding: 24px 26px; margin-bottom: 28px; box-shadow: 0 2px 10px var(--shadow);
@@ -302,7 +330,7 @@ footer {{ text-align: center; font-size: 12px; color: var(--muted); margin-top: 
 <div class="page">
   <header class="masthead">
     <div class="kicker">行业情报日报 · 公开信息跟踪</div>
-    <h1>半导体 <span style="color:var(--accent)">/</span> 光通信 <span style="color:var(--accent)">/</span> 物理AI <span style="color:var(--accent)">/</span> AI算力与资本</h1>
+    <h1>全球政经 <span style="color:var(--accent)">·</span> 行业动态情报</h1>
     <div class="sub">工作日更新 · 仅基于公开来源 · <b>共 {len(parsed)} 期 · {total_items} 条</b></div>
   </header>
 
@@ -310,6 +338,7 @@ footer {{ text-align: center; font-size: 12px; color: var(--muted); margin-top: 
     <div class="search-wrap"><input id="q" type="search" placeholder="搜索标题 / 摘要 / 标签…"></div>
     <div class="chips" id="secChips">
       <button class="chip on" data-sec="all">全部</button>
+      <button class="chip" data-sec="全球政经">政经</button>
       <button class="chip" data-sec="半导体">半导体</button>
       <button class="chip" data-sec="光通信">光通信</button>
       <button class="chip" data-sec="物理AI">物理AI</button>
