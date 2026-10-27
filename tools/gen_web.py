@@ -175,6 +175,9 @@ def main():
         f'<button class="tag cloud-tag" data-tag="{esc(t)}">{esc(t)} <em>{c}</em></button>'
         for t, c in top_tags
     )
+    rail_dates = ''.join(
+        f'<li><a href="#d-{d["date"]}">{d["date"]}</a></li>' for d in parsed[:15]
+    )
 
     html_doc = f"""<!DOCTYPE html>
 <html lang="zh-CN" data-theme="light">
@@ -204,7 +207,7 @@ body {{
   font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", Georgia, serif;
   line-height: 1.75; -webkit-font-smoothing: antialiased;
 }}
-.page {{ max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }}
+.page {{ max-width: 1240px; margin: 0 auto; padding: 32px 26px 80px; }}
 header.masthead {{
   border-bottom: 3px double var(--accent); padding-bottom: 14px; margin-bottom: 8px;
 }}
@@ -280,6 +283,20 @@ header.masthead {{
 .col-pol {{ padding-right: 26px; border-right: 3px double var(--line); }}
 .col-ind {{ padding-left: 26px; }}
 
+.layout {{ display: block; }}
+.rail {{ display: none; }}
+@media (min-width: 1480px) {{
+  .layout {{ display: grid; grid-template-columns: 158px minmax(0,1fr) 214px; gap: 28px; align-items: start; }}
+  .rail {{ display: block; position: sticky; top: 16px; }}
+  .rail h4 {{ font-size: 12px; letter-spacing: 4px; color: var(--sub); border-bottom: 1px solid var(--line); padding-bottom: 6px; margin: 20px 0 10px; }}
+  .rail-dates {{ list-style: none; }}
+  .rail-dates li {{ margin: 0 0 6px; }}
+  .rail-dates a {{ color: var(--ink); text-decoration: none; font-size: 13px; border-bottom: 1px dotted var(--line); }}
+  .rail-dates a:hover {{ color: var(--accent); }}
+  .rail-note {{ font-size: 12px; color: var(--muted); line-height: 1.8; }}
+  .rail .tag {{ margin: 0 4px 5px 0; }}
+}}
+
 article.day {{
   background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
   padding: 24px 26px; margin-bottom: 28px; box-shadow: 0 2px 10px var(--shadow);
@@ -348,7 +365,7 @@ footer {{ text-align: center; font-size: 12px; color: var(--muted); margin-top: 
 <body>
 <div class="page">
   <header class="masthead">
-    <div class="kicker">行业情报日报 · 公开信息跟踪</div>
+    <div class="kicker">行业情报日报 · 公开信息跟踪 · {parsed[0]['date']}</div>
     <h1>全球政经 <span style="color:var(--accent)">·</span> 行业动态情报</h1>
     <div class="sub">工作日更新 · 仅基于公开来源 · <b>共 {len(parsed)} 期 · {total_items} 条</b></div>
   </header>
@@ -369,11 +386,14 @@ footer {{ text-align: center; font-size: 12px; color: var(--muted); margin-top: 
 
   <div class="active-filter" id="activeFilter"></div>
 
-  <div class="tags-cloud">
-    <h4>🏷 高频标签（点击筛选相关跟踪）</h4>
-    {tags_cloud}
-  </div>
-
+  <div class="layout">
+  <aside class="rail rail-l">
+    <h4>日期目录</h4>
+    <ul class="rail-dates">{rail_dates}</ul>
+    <h4>收录</h4>
+    <p class="rail-note">第 {len(parsed)} 期 · 共 {total_items} 条<br>最近更新 {parsed[0]['date']}</p>
+  </aside>
+  <main id="days">
   <nav style="margin-bottom:16px">
     <select id="jump" style="padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font-size:14px;width:100%;font-family:'PingFang SC','Microsoft YaHei',sans-serif">
       <option value="">📅 跳转到指定日期…</option>
@@ -384,6 +404,12 @@ footer {{ text-align: center; font-size: 12px; color: var(--muted); margin-top: 
   <div class="result-empty" id="empty">没有匹配的内容，换个关键词或清除筛选试试。</div>
 
   {''.join(body)}
+  </main>
+  <aside class="rail rail-r">
+    <h4>🏷 标签索引</h4>
+    {tags_cloud}
+  </aside>
+  </div>
 
   <footer>
     行业情报日报 · 由 Kimi Claw 自动采集生成 · 仅基于公开信息，不构成投资建议<br>
