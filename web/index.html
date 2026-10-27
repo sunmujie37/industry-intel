@@ -1,51 +1,297 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>行业情报日报 · 半导体 / 光通信 / 物理AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="行业情报日报：半导体 / 光通信 / 物理AI / AI算力与资本，每日更新，公开来源。">
+<meta property="og:title" content="行业情报日报 · 半导体/光通信/物理AI/AI算力与资本">
+<meta property="og:description" content="每日行业情报追踪与回溯，仅基于公开信息。">
+<title>行业情报日报 · 半导体 / 光通信 / 物理AI / AI算力与资本</title>
+<link rel="alternate" type="application/rss+xml" title="行业情报日报" href="feed.xml">
 <style>
-:root { --ink:#1a1a1a; --sub:#666; --line:#e6e2da; --accent:#B03A2E; }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:"Noto Serif SC","Songti SC","SimSun",serif; background:#f7f5f0; color:var(--ink); line-height:1.75; }
-.wrap { max-width:780px; margin:0 auto; padding:32px 20px 80px; }
-.masthead { border-bottom:3px double var(--ink); padding-bottom:18px; margin-bottom:8px; }
-.masthead h1 { font-size:26px; letter-spacing:2px; }
-.masthead h1 small { font-size:13px; letter-spacing:1px; color:var(--sub); font-weight:normal; margin-left:10px; }
-.masthead p { color:var(--sub); font-size:13px; margin-top:6px; }
-.stats { display:flex; gap:24px; font-size:13px; color:var(--sub); padding:10px 0 20px; }
-.stats b { color:var(--accent); font-size:16px; margin-right:4px; }
-.jump { margin:0 0 24px; }
-.jump select { font-family:inherit; padding:6px 10px; border:1px solid var(--line); background:#fff; font-size:13px; }
-article.day { background:#fff; border:1px solid var(--line); padding:28px 30px; margin-bottom:28px; }
-article.day.today { box-shadow:0 2px 14px rgba(0,0,0,.05); }
-h2.day-title { font-size:20px; margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid var(--line); }
-h2.day-title span { font-size:13px; color:var(--sub); font-weight:normal; margin-left:8px; }
-h2.day-title em { font-style:normal; font-size:12px; color:#fff; background:var(--accent); padding:1px 8px; border-radius:2px; margin-left:10px; vertical-align:2px; }
-section { margin-bottom:20px; }
-h3 { font-size:16px; padding-left:10px; border-left:4px solid; margin-bottom:10px; }
-h3 .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:8px; vertical-align:1px; }
-ul { list-style:none; }
-li { padding:10px 0 10px 2px; border-bottom:1px dashed var(--line); }
-li:last-child { border-bottom:none; }
-a.t { font-size:15.5px; font-weight:bold; color:var(--ink); text-decoration:none; }
-a.t:hover { color:var(--accent); text-decoration:underline; }
-p.s { font-size:14px; color:#333; margin-top:4px; }
-p.m { font-size:12.5px; color:var(--sub); margin-top:4px; }
-p.m a { color:var(--sub); }
-footer { color:var(--sub); font-size:12px; text-align:center; padding-top:16px; border-top:1px solid var(--line); }
+:root {
+  --bg: #F5F1E8; --paper: #FCFAF4; --ink: #26221B; --muted: #7A7264;
+  --line: #E4DECF; --accent: #8C1F18; --head: #1F1B14;
+  --chip-bg: #EFE9DA; --chip-on: #8C1F18; --shadow: rgba(38,34,27,.08);
+}
+html[data-theme="dark"] {
+  --bg: #16130E; --paper: #1E1A13; --ink: #E8E2D4; --muted: #9A917E;
+  --line: #35301F; --accent: #C4625A; --head: #F0EAD9;
+  --chip-bg: #2B2618; --chip-on: #D4706A; --shadow: rgba(0,0,0,.4);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", Georgia, serif;
+  line-height: 1.75; -webkit-font-smoothing: antialiased;
+}
+.page { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+header.masthead {
+  border-bottom: 3px double var(--accent); padding-bottom: 14px; margin-bottom: 8px;
+}
+.masthead .kicker {
+  font-size: 12px; letter-spacing: 3px; color: var(--muted);
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.masthead h1 { font-size: 30px; color: var(--head); letter-spacing: 1px; line-height: 1.3; }
+.masthead .sub { font-size: 13px; color: var(--muted); margin-top: 4px;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+.masthead .sub b { color: var(--accent); font-weight: 600; }
+
+.toolbar {
+  position: sticky; top: 0; z-index: 50; background: var(--paper);
+  border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 4px 16px var(--shadow);
+  padding: 10px 12px; margin: 16px 0 20px;
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+}
+.search-wrap { flex: 1 1 180px; position: relative; }
+.search-wrap input {
+  width: 100%; padding: 8px 12px 8px 32px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg); color: var(--ink); font-size: 14px; outline: none;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.search-wrap input:focus { border-color: var(--accent); }
+.search-wrap::before {
+  content: "🔍"; position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
+  font-size: 13px; opacity: .7;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--chip-bg); color: var(--ink); font-size: 12.5px; cursor: pointer;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif; transition: all .15s;
+}
+.chip.on { background: var(--chip-on); color: #FCFAF4; border-color: var(--chip-on); }
+#themeBtn {
+  margin-left: auto; border: 1px solid var(--line); background: var(--chip-bg);
+  border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 14px;
+}
+.active-filter {
+  display: none; margin: 0 0 14px; padding: 8px 12px; border: 1px dashed var(--accent);
+  border-radius: 8px; font-size: 13px; color: var(--accent);
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.active-filter.show { display: block; }
+.active-filter button {
+  margin-left: 10px; background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 12px; text-decoration: underline;
+}
+.tags-cloud { margin: 0 0 20px; padding: 12px 14px; background: var(--paper);
+  border: 1px solid var(--line); border-radius: 10px; }
+.tags-cloud h4 { font-size: 12px; color: var(--muted); letter-spacing: 2px; margin-bottom: 8px;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-weight: 500; }
+.tag {
+  display: inline-block; margin: 2px 4px 2px 0; padding: 2px 10px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--chip-bg); color: var(--muted);
+  font-size: 12px; cursor: pointer;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.tag:hover { border-color: var(--accent); color: var(--accent); }
+.tag em { font-style: normal; opacity: .65; font-size: 11px; }
+.tag.on { background: var(--chip-on); color: #FCFAF4; border-color: var(--chip-on); }
+
+article.day {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+  padding: 24px 26px; margin-bottom: 28px; box-shadow: 0 2px 10px var(--shadow);
+}
+.day-header {
+  border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 14px;
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+}
+.day-date { font-size: 20px; font-weight: 700; color: var(--head); letter-spacing: 1px; }
+.day-title { font-size: 14px; color: var(--muted); }
+.today-badge {
+  background: var(--accent); color: #FCFAF4; font-size: 11px; padding: 2px 10px;
+  border-radius: 4px; letter-spacing: 2px;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+.highlights {
+  background: var(--chip-bg); border-left: 4px solid var(--accent);
+  padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 18px;
+}
+.highlights h3 { font-size: 14px; color: var(--accent); margin-bottom: 6px;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+.highlights li { font-size: 14.5px; margin-left: 18px; margin-bottom: 4px; }
+.block { margin-bottom: 18px; }
+.block h3 {
+  font-size: 17px; border-bottom: 2px solid; padding-bottom: 4px; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.sec-count {
+  font-size: 11px; background: var(--chip-bg); color: var(--muted);
+  border-radius: 999px; padding: 1px 9px; font-weight: 400;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+ul.items { list-style: none; }
+li.item { padding: 12px 0; border-bottom: 1px dashed var(--line); }
+li.item:last-child { border-bottom: none; }
+li.item.hidden { display: none; }
+.item-head { display: flex; align-items: baseline; gap: 8px; }
+a.item-title { font-size: 15.5px; font-weight: 700; color: var(--ink); text-decoration: none; }
+a.item-title:hover { color: var(--accent); text-decoration: underline; }
+a.anchor { color: var(--muted); text-decoration: none; font-size: 12px; opacity: 0; transition: opacity .15s; }
+li.item:hover a.anchor { opacity: 1; }
+.summary { font-size: 14px; color: var(--ink); opacity: .92; margin: 6px 0; }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12.5px;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+.src { color: var(--muted); }
+a.orig { color: var(--accent); text-decoration: none; }
+a.orig:hover { text-decoration: underline; }
+footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 24px;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+.result-empty { display:none; text-align:center; color:var(--muted); padding: 30px 0; }
+.result-empty.show { display:block; }
+.day.dimmed { display: none; }
+@media (max-width: 600px) {
+  .page { padding: 20px 12px 60px; }
+  .masthead h1 { font-size: 23px; }
+  article.day { padding: 16px 14px; }
+  .toolbar { position: static; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="page">
   <header class="masthead">
-    <h1>行业情报日报<small>半导体 · 光通信 · 物理AI</small></h1>
-    <p>每日定时采集公开信息，预筛归并入库。仅公开来源，由 Kimi Claw 生成。</p>
+    <div class="kicker">行业情报日报 · 公开信息跟踪</div>
+    <h1>半导体 <span style="color:var(--accent)">/</span> 光通信 <span style="color:var(--accent)">/</span> 物理AI <span style="color:var(--accent)">/</span> AI算力与资本</h1>
+    <div class="sub">工作日更新 · 仅基于公开来源 · <b>共 1 期 · 8 条</b></div>
   </header>
-  <div class="stats"><span><b>1</b>期</span><span><b>8</b>条入库</span><span>更新于每日 08:17（工作日）</span></div>
-  <div class="jump"><select onchange="if(this.value)location.hash=this.value"><option value="">跳转到日期…</option><option value="2026-10-27">2026-10-27</option></select></div>
-  <article class="day today"><h2 class="day-title">2026年10月27日 <span>星期二</span> <em>今日</em></h2><section><h3 style="border-color:#1F5C8B"><span class="dot" style="background:#1F5C8B"></span>半导体</h3><ul><li><a class="t" href="https://www.cls.cn/detail/2504837" target="_blank">摩根大通：2027年全球晶圆制造设备支出看至2250亿美元（+38%），2028年2630亿</a><p class="s">台积电2026-2028年资本开支预测上调至640/860/1000亿美元；2026-2028年全球DRAM相关资本开支累计约4130亿美元（高于此前预期3680亿）；主要约束从需求转为厂房洁净室建设周期，订单转化收入可能滞后</p><p class="m">财联社 2026-10-14 · <a href="https://www.cls.cn/detail/2504837" target="_blank">原文</a></p></li><li><a class="t" href="https://www.caixin.com/2026-08-29/102479752.html" target="_blank">长鑫科技2026H1：营收增长近9倍，归母净利788亿元，产能利用率95.73%</a><p class="s">全球市占率从2024年约5%升至2025年底7.67%（中国第一、全球第四）；瑞银：上海+合肥新建4座晶圆厂，2028年底总产能提升至46.4万片/月；首次披露LPDDR6进展</p><p class="m">财新 2026-08-29 · <a href="https://www.caixin.com/2026-08-29/102479752.html" target="_blank">原文</a></p></li></ul></section><section><h3 style="border-color:#B03A2E"><span class="dot" style="background:#B03A2E"></span>光通信</h3><ul><li><a class="t" href="https://finance.sina.com.cn/stock/aiassist/ydfx/2026-10-27/doc-iniwrqsu2089211.shtml" target="_blank">福晶科技三季报：前三季度营收11.63亿（+38.05%），归母净利3.24亿（+48.76%）</a><p class="s">精密光学元件营收同比+71.8%；合同负债较年初+598.77%，订单能见度高；子公司至期光子H1营收1.39亿、净利3589万；10月27日光通信板块全天资金净流入超32亿元</p><p class="m">新浪财经 2026-10-27 · <a href="https://finance.sina.com.cn/stock/aiassist/ydfx/2026-10-27/doc-iniwrqsu2089211.shtml" target="_blank">原文</a></p></li><li><a class="t" href="https://m.c114.com.cn/w39-1311504.html" target="_blank">LightCounting：2026年硅光模块销售额首超整体市场50%</a><p class="s">NPO/CPO部署加速硅光渗透并带动InP CW激光器需求；光芯片市场2025年约40亿美元，2031年看至150亿美元（近4倍）；到2031年光模块+AOC+NPO/CPO销售额合计近800亿美元</p><p class="m">C114 2026-06-02 · <a href="https://m.c114.com.cn/w39-1311504.html" target="_blank">原文</a></p></li></ul></section><section><h3 style="border-color:#2F6B3A"><span class="dot" style="background:#2F6B3A"></span>物理AI</h3><ul><li><a class="t" href="http://stock.finance.sina.com.cn/stock/go.php/vReport_Show/kind/lastest/rptid/846174917017/index.phtml" target="_blank">特斯拉3Q26业绩会（10/22）：Optimus量产规划更新</a><p class="s">Fremont工厂产能爬坡至2万台/周约需1年；计划2027年底开始外售Optimus V3；卖方（中信）判断行业关注点从样机展示转向产能爬坡、作业效率与外部订单兑现</p><p class="m">新浪财经研报 2026-10-24 · <a href="http://stock.finance.sina.com.cn/stock/go.php/vReport_Show/kind/lastest/rptid/846174917017/index.phtml" target="_blank">原文</a></p></li><li><a class="t" href="https://jnzstatic.cs.com.cn/zzb/htmlInfo/7fc97ec67840774abb78a617c8b8fdae.html" target="_blank">商务部：前三季度重点平台具身智能机器人销售额同比+22.6%</a><p class="s">10月20日南京&quot;2026物理AI与世界模型大会&quot;签约项目总投资超60亿元（具身智能整机、世界模型、物理AI芯片）；江苏遴选50个典型应用场景；10月16-26日万得人形机器人概念指数+12.63%、宇树科技-W区间+65.88%</p><p class="m">中证金牛座 2026-10-27 · <a href="https://jnzstatic.cs.com.cn/zzb/htmlInfo/7fc97ec67840774abb78a617c8b8fdae.html" target="_blank">原文</a></p></li></ul></section><section><h3 style="border-color:#9A6B1F"><span class="dot" style="background:#9A6B1F"></span>AI算力与资本</h3><ul><li><a class="t" href="https://xueqiu.com/9080548226/413949394" target="_blank">Anthropic公开递交S-1（10/26，补录）</a><p class="s">2026上半年收入163亿美元，超2025全年约46亿的3.5倍；H1净亏损807亿美元（主因可转债公允价值会计变动，非经营性亏损）；拟纳斯达克上市、代码ANT，预计11月中旬挂牌；估值预期自2万亿下修至约1.5万亿美元（Q3业绩未达预期），募资规模或超1000亿美元</p><p class="m">The Information 2026-10-26（雪球转载） · <a href="https://xueqiu.com/9080548226/413949394" target="_blank">原文</a></p></li><li><a class="t" href="https://blog.csdn.net/gedonshen/article/details/168645637" target="_blank">OpenAI抢跑融资：拟赶在Anthropic挂牌前完成约300亿美元融资</a><p class="s">Reuters 10/19报道，估值或超1.4万亿美元，软银、阿布扎比MGX等洽谈参与；GPT-6 Astra已占企业AI支出约13%（Ramp数据），OpenRouter上OpenAI模型支出两年半来首次反超Anthropic</p><p class="m">AI前沿综述（引Reuters/Fortune）2026-10-21 · <a href="https://blog.csdn.net/gedonshen/article/details/168645637" target="_blank">原文</a></p></li></ul></section><section><h3 style="border-color:#6B4FA0"><span class="dot" style="background:#6B4FA0"></span>值得追问的线索</h3><ul></ul></section></article>
-  <footer>合规声明：本信息库仅收录公开来源信息，不含任何未公开或内部材料。生成：Kimi Claw for sum</footer>
+
+  <div class="toolbar">
+    <div class="search-wrap"><input id="q" type="search" placeholder="搜索标题 / 摘要 / 标签…"></div>
+    <div class="chips" id="secChips">
+      <button class="chip on" data-sec="all">全部</button>
+      <button class="chip" data-sec="半导体">半导体</button>
+      <button class="chip" data-sec="光通信">光通信</button>
+      <button class="chip" data-sec="物理AI">物理AI</button>
+      <button class="chip" data-sec="AI算力与资本">AI算力与资本</button>
+      <button class="chip" data-sec="值得追问的线索">线索</button>
+    </div>
+    <button id="themeBtn" title="切换深色模式">🌙</button>
+  </div>
+
+  <div class="active-filter" id="activeFilter"></div>
+
+  <div class="tags-cloud">
+    <h4>🏷 高频标签（点击筛选相关跟踪）</h4>
+    
+  </div>
+
+  <nav style="margin-bottom:16px">
+    <select id="jump" style="padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font-size:14px;width:100%;font-family:'PingFang SC','Microsoft YaHei',sans-serif">
+      <option value="">📅 跳转到指定日期…</option>
+      <option value="d-2026-10-27">2026-10-27（今日）</option>
+    </select>
+  </nav>
+
+  <div class="result-empty" id="empty">没有匹配的内容，换个关键词或清除筛选试试。</div>
+
+  <article class="day" id="d-2026-10-27" data-date="2026-10-27"><header class="day-header"><span class="day-date">2026-10-27</span><span class="day-title">行业情报日报 · 2026-10-27（周二）</span> <span class="today-badge">今日</span></header><section class="highlights"><h3>📌 今日要点</h3><ul><li>设备景气继续上修：摩根大通把2027全球晶圆制造设备支出看至2250亿美元（+38%），台积电三年capex最高看至1000亿美元/年</li><li>三季报验证光通信景气：福晶科技前三季度净利+48.76%，合同负债较年初+598%，订单能见度极高</li><li>AI资本端密集出牌：Anthropic递交S-1（上半年收入163亿美元），OpenAI抢跑300亿美元融资，算力军备弹药还在加码</li></ul></section><section class="block" data-sec="半导体"><h3 style="color:#8C1F18;border-color:#8C1F18">半导体<span class="sec-count">2</span></h3><ul class="items"><li class="item" id="d-2026-10-27-半导体-0" data-sec="半导体" data-tags="" data-search="摩根大通：2027年全球晶圆制造设备支出看至2250亿美元（+38%），2028年2630亿 台积电2026-2028年资本开支预测上调至640/860/1000亿美元；2026-2028年全球DRAM相关资本开支累计约4130亿美元（高于此前预期3680亿）；主要约束从需求转为厂房洁净室建设周期，订单转化收入可能滞后 财联社 2026-10-14 "><div class="item-head"><a class="item-title" href="https://www.cls.cn/detail/2504837｜半导体设备,晶圆厂,台积电" target="_blank" rel="noopener">摩根大通：2027年全球晶圆制造设备支出看至2250亿美元（+38%），2028年2630亿</a><a class="anchor" href="#d-2026-10-27-半导体-0" title="复制本条链接">#</a></div><p class="summary">台积电2026-2028年资本开支预测上调至640/860/1000亿美元；2026-2028年全球DRAM相关资本开支累计约4130亿美元（高于此前预期3680亿）；主要约束从需求转为厂房洁净室建设周期，订单转化收入可能滞后</p><div class="meta"><span class="src">财联社 2026-10-14</span><a class="orig" href="https://www.cls.cn/detail/2504837｜半导体设备,晶圆厂,台积电" target="_blank" rel="noopener">阅读原文 ↗</a></div></li><li class="item" id="d-2026-10-27-半导体-1" data-sec="半导体" data-tags="" data-search="长鑫科技2026H1：营收增长近9倍，归母净利788亿元，产能利用率95.73% 全球市占率从2024年约5%升至2025年底7.67%（中国第一、全球第四）；瑞银：上海+合肥新建4座晶圆厂，2028年底总产能提升至46.4万片/月；首次披露LPDDR6进展 财新 2026-08-29 "><div class="item-head"><a class="item-title" href="https://www.caixin.com/2026-08-29/102479752.html｜长鑫,存储,DRAM" target="_blank" rel="noopener">长鑫科技2026H1：营收增长近9倍，归母净利788亿元，产能利用率95.73%</a><a class="anchor" href="#d-2026-10-27-半导体-1" title="复制本条链接">#</a></div><p class="summary">全球市占率从2024年约5%升至2025年底7.67%（中国第一、全球第四）；瑞银：上海+合肥新建4座晶圆厂，2028年底总产能提升至46.4万片/月；首次披露LPDDR6进展</p><div class="meta"><span class="src">财新 2026-08-29</span><a class="orig" href="https://www.caixin.com/2026-08-29/102479752.html｜长鑫,存储,DRAM" target="_blank" rel="noopener">阅读原文 ↗</a></div></li></ul></section><section class="block" data-sec="光通信"><h3 style="color:#1F4E79;border-color:#1F4E79">光通信<span class="sec-count">2</span></h3><ul class="items"><li class="item" id="d-2026-10-27-光通信-0" data-sec="光通信" data-tags="" data-search="福晶科技三季报：前三季度营收11.63亿（+38.05%），归母净利3.24亿（+48.76%） 精密光学元件营收同比+71.8%；合同负债较年初+598.77%，订单能见度高；子公司至期光子H1营收1.39亿、净利3589万；10月27日光通信板块全天资金净流入超32亿元 新浪财经 2026-10-27 "><div class="item-head"><a class="item-title" href="https://finance.sina.com.cn/stock/aiassist/ydfx/2026-10-27/doc-iniwrqsu2089211.shtml｜福晶科技,三季报,光学元件" target="_blank" rel="noopener">福晶科技三季报：前三季度营收11.63亿（+38.05%），归母净利3.24亿（+48.76%）</a><a class="anchor" href="#d-2026-10-27-光通信-0" title="复制本条链接">#</a></div><p class="summary">精密光学元件营收同比+71.8%；合同负债较年初+598.77%，订单能见度高；子公司至期光子H1营收1.39亿、净利3589万；10月27日光通信板块全天资金净流入超32亿元</p><div class="meta"><span class="src">新浪财经 2026-10-27</span><a class="orig" href="https://finance.sina.com.cn/stock/aiassist/ydfx/2026-10-27/doc-iniwrqsu2089211.shtml｜福晶科技,三季报,光学元件" target="_blank" rel="noopener">阅读原文 ↗</a></div></li><li class="item" id="d-2026-10-27-光通信-1" data-sec="光通信" data-tags="" data-search="LightCounting：2026年硅光模块销售额首超整体市场50% NPO/CPO部署加速硅光渗透并带动InP CW激光器需求；光芯片市场2025年约40亿美元，2031年看至150亿美元（近4倍）；到2031年光模块+AOC+NPO/CPO销售额合计近800亿美元 C114 2026-06-02 "><div class="item-head"><a class="item-title" href="https://m.c114.com.cn/w39-1311504.html｜硅光,CPO,光模块" target="_blank" rel="noopener">LightCounting：2026年硅光模块销售额首超整体市场50%</a><a class="anchor" href="#d-2026-10-27-光通信-1" title="复制本条链接">#</a></div><p class="summary">NPO/CPO部署加速硅光渗透并带动InP CW激光器需求；光芯片市场2025年约40亿美元，2031年看至150亿美元（近4倍）；到2031年光模块+AOC+NPO/CPO销售额合计近800亿美元</p><div class="meta"><span class="src">C114 2026-06-02</span><a class="orig" href="https://m.c114.com.cn/w39-1311504.html｜硅光,CPO,光模块" target="_blank" rel="noopener">阅读原文 ↗</a></div></li></ul></section><section class="block" data-sec="物理AI"><h3 style="color:#1E5E3E;border-color:#1E5E3E">物理AI<span class="sec-count">2</span></h3><ul class="items"><li class="item" id="d-2026-10-27-物理AI-0" data-sec="物理AI" data-tags="" data-search="特斯拉3Q26业绩会（10/22）：Optimus量产规划更新 Fremont工厂产能爬坡至2万台/周约需1年；计划2027年底开始外售Optimus V3；卖方（中信）判断行业关注点从样机展示转向产能爬坡、作业效率与外部订单兑现 新浪财经研报 2026-10-24 "><div class="item-head"><a class="item-title" href="http://stock.finance.sina.com.cn/stock/go.php/vReport_Show/kind/lastest/rptid/846174917017/index.phtml｜特斯拉,Optimus,人形机器人" target="_blank" rel="noopener">特斯拉3Q26业绩会（10/22）：Optimus量产规划更新</a><a class="anchor" href="#d-2026-10-27-物理AI-0" title="复制本条链接">#</a></div><p class="summary">Fremont工厂产能爬坡至2万台/周约需1年；计划2027年底开始外售Optimus V3；卖方（中信）判断行业关注点从样机展示转向产能爬坡、作业效率与外部订单兑现</p><div class="meta"><span class="src">新浪财经研报 2026-10-24</span><a class="orig" href="http://stock.finance.sina.com.cn/stock/go.php/vReport_Show/kind/lastest/rptid/846174917017/index.phtml｜特斯拉,Optimus,人形机器人" target="_blank" rel="noopener">阅读原文 ↗</a></div></li><li class="item" id="d-2026-10-27-物理AI-1" data-sec="物理AI" data-tags="" data-search="商务部：前三季度重点平台具身智能机器人销售额同比+22.6% 10月20日南京&quot;2026物理AI与世界模型大会&quot;签约项目总投资超60亿元（具身智能整机、世界模型、物理AI芯片）；江苏遴选50个典型应用场景；10月16-26日万得人形机器人概念指数+12.63%、宇树科技-W区间+65.88% 中证金牛座 2026-10-27 "><div class="item-head"><a class="item-title" href="https://jnzstatic.cs.com.cn/zzb/htmlInfo/7fc97ec67840774abb78a617c8b8fdae.html｜人形机器人,宇树科技,政策" target="_blank" rel="noopener">商务部：前三季度重点平台具身智能机器人销售额同比+22.6%</a><a class="anchor" href="#d-2026-10-27-物理AI-1" title="复制本条链接">#</a></div><p class="summary">10月20日南京&quot;2026物理AI与世界模型大会&quot;签约项目总投资超60亿元（具身智能整机、世界模型、物理AI芯片）；江苏遴选50个典型应用场景；10月16-26日万得人形机器人概念指数+12.63%、宇树科技-W区间+65.88%</p><div class="meta"><span class="src">中证金牛座 2026-10-27</span><a class="orig" href="https://jnzstatic.cs.com.cn/zzb/htmlInfo/7fc97ec67840774abb78a617c8b8fdae.html｜人形机器人,宇树科技,政策" target="_blank" rel="noopener">阅读原文 ↗</a></div></li></ul></section><section class="block" data-sec="AI算力与资本"><h3 style="color:#9A6B1F;border-color:#9A6B1F">AI算力与资本<span class="sec-count">2</span></h3><ul class="items"><li class="item" id="d-2026-10-27-AI算力与资本-0" data-sec="AI算力与资本" data-tags="" data-search="Anthropic公开递交S-1（10/26，补录） 2026上半年收入163亿美元，超2025全年约46亿的3.5倍；H1净亏损807亿美元（主因可转债公允价值会计变动，非经营性亏损）；拟纳斯达克上市、代码ANT，预计11月中旬挂牌；估值预期自2万亿下修至约1.5万亿美元（Q3业绩未达预期），募资规模或超1000亿美元 The Information 2026-10-26（雪球转载） "><div class="item-head"><a class="item-title" href="https://xueqiu.com/9080548226/413949394｜Anthropic,AI算力,IPO" target="_blank" rel="noopener">Anthropic公开递交S-1（10/26，补录）</a><a class="anchor" href="#d-2026-10-27-AI算力与资本-0" title="复制本条链接">#</a></div><p class="summary">2026上半年收入163亿美元，超2025全年约46亿的3.5倍；H1净亏损807亿美元（主因可转债公允价值会计变动，非经营性亏损）；拟纳斯达克上市、代码ANT，预计11月中旬挂牌；估值预期自2万亿下修至约1.5万亿美元（Q3业绩未达预期），募资规模或超1000亿美元</p><div class="meta"><span class="src">The Information 2026-10-26（雪球转载）</span><a class="orig" href="https://xueqiu.com/9080548226/413949394｜Anthropic,AI算力,IPO" target="_blank" rel="noopener">阅读原文 ↗</a></div></li><li class="item" id="d-2026-10-27-AI算力与资本-1" data-sec="AI算力与资本" data-tags="" data-search="OpenAI抢跑融资：拟赶在Anthropic挂牌前完成约300亿美元融资 Reuters 10/19报道，估值或超1.4万亿美元，软银、阿布扎比MGX等洽谈参与；GPT-6 Astra已占企业AI支出约13%（Ramp数据），OpenRouter上OpenAI模型支出两年半来首次反超Anthropic AI前沿综述（引Reuters/Fortune）2026-10-21 "><div class="item-head"><a class="item-title" href="https://blog.csdn.net/gedonshen/article/details/168645637｜OpenAI,AI算力,融资" target="_blank" rel="noopener">OpenAI抢跑融资：拟赶在Anthropic挂牌前完成约300亿美元融资</a><a class="anchor" href="#d-2026-10-27-AI算力与资本-1" title="复制本条链接">#</a></div><p class="summary">Reuters 10/19报道，估值或超1.4万亿美元，软银、阿布扎比MGX等洽谈参与；GPT-6 Astra已占企业AI支出约13%（Ramp数据），OpenRouter上OpenAI模型支出两年半来首次反超Anthropic</p><div class="meta"><span class="src">AI前沿综述（引Reuters/Fortune）2026-10-21</span><a class="orig" href="https://blog.csdn.net/gedonshen/article/details/168645637｜OpenAI,AI算力,融资" target="_blank" rel="noopener">阅读原文 ↗</a></div></li></ul></section></article>
+
+  <footer>
+    行业情报日报 · 由 Kimi Claw 自动采集生成 · 仅基于公开信息，不构成投资建议<br>
+    生成时间 2026-10-27 14:46（Asia/Shanghai） · <a href="feed.xml" style="color:var(--accent)">RSS订阅</a>
+  </footer>
 </div>
+
+<script>
+const state = { q: '', sec: 'all', tag: null };
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+function applyFilters() {
+  let visible = 0;
+  $$('li.item').forEach(el => {
+    const okSec = state.sec === 'all' || el.dataset.sec === state.sec;
+    const okTag = !state.tag || (el.dataset.tags || '').split(',').includes(state.tag);
+    const okQ = !state.q || el.dataset.search.toLowerCase().includes(state.q);
+    const show = okSec && okTag && okQ;
+    el.classList.toggle('hidden', !show);
+    if (show) visible++;
+  });
+  $$('article.day').forEach(day => {
+    const any = Array.from(day.querySelectorAll('li.item')).some(el => !el.classList.contains('hidden'));
+    day.classList.toggle('dimmed', !any);
+  });
+  $('#empty').classList.toggle('show', visible === 0);
+
+  const parts = [];
+  if (state.sec !== 'all') parts.push('板块：' + state.sec);
+  if (state.tag) parts.push('标签：' + state.tag);
+  const af = $('#activeFilter');
+  if (parts.length) {
+    af.innerHTML = '筛选中 — ' + parts.join(' · ') + '<button id="clearFilter">清除全部</button>';
+    af.classList.add('show');
+    $('#clearFilter').onclick = () => {
+      state.sec = 'all'; state.tag = null; state.q = '';
+      $('#q').value = '';
+      $$('#secChips .chip').forEach(c => c.classList.toggle('on', c.dataset.sec === 'all'));
+      $$('.tag.on').forEach(t => t.classList.remove('on'));
+      applyFilters();
+    };
+  } else {
+    af.classList.remove('show');
+  }
+}
+
+$('#q').addEventListener('input', e => { state.q = e.target.value.trim().toLowerCase(); applyFilters(); });
+
+$$('#secChips .chip').forEach(chip => {
+  chip.onclick = () => {
+    state.sec = chip.dataset.sec;
+    $$('#secChips .chip').forEach(c => c.classList.toggle('on', c === chip));
+    applyFilters();
+  };
+});
+
+$$('.tag').forEach(t => {
+  t.onclick = () => {
+    const tag = t.dataset.tag;
+    if (state.tag === tag) {
+      state.tag = null;
+      $$('.tag.on').forEach(x => x.classList.remove('on'));
+    } else {
+      state.tag = tag;
+      $$('.tag.on').forEach(x => x.classList.remove('on'));
+      $$(`.tag[data-tag="${CSS.escape(tag)}"]`).forEach(x => x.classList.add('on'));
+    }
+    applyFilters();
+    document.querySelector('.toolbar').scrollIntoView({ behavior: 'smooth' });
+  };
+});
+
+$('#jump').addEventListener('change', e => {
+  if (!e.target.value) return;
+  const el = document.getElementById(e.target.value);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+  e.target.value = '';
+});
+
+// 深色模式
+const html = document.documentElement;
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme) html.dataset.theme = savedTheme;
+else if (window.matchMedia('(prefers-color-scheme: dark)').matches) html.dataset.theme = 'dark';
+const syncThemeBtn = () => $('#themeBtn').textContent = html.dataset.theme === 'dark' ? '☀️' : '🌙';
+syncThemeBtn();
+$('#themeBtn').onclick = () => {
+  html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('theme', html.dataset.theme);
+  syncThemeBtn();
+};
+
+// 锚点链接复制
+$$('a.anchor').forEach(a => {
+  a.onclick = ev => {
+    ev.preventDefault();
+    const url = location.origin + location.pathname + a.getAttribute('href');
+    navigator.clipboard?.writeText(url);
+    a.textContent = '✓';
+    setTimeout(() => a.textContent = '#', 1200);
+  };
+});
+</script>
 </body>
 </html>
