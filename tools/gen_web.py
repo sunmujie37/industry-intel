@@ -34,7 +34,7 @@ BOARDS = [
     ('行业动态情报', ['半导体', '光通信', '物理AI', 'AI算力与资本']),
 ]
 
-ITEM_RE = re.compile(r'^- \*\*(.+?)\*\*｜(.*?)｜(.*?)｜(\S+)(?:｜(.*))?$')
+ITEM_RE = re.compile(r'^- \*\*(.+?)\*\*｜(.*?)｜(.*?)｜(\S+?)(?:｜(.*))?$')
 DAY_TITLE_RE = re.compile(r'^# (.+)$')
 
 def parse_day(md_path):
@@ -61,13 +61,22 @@ def parse_day(md_path):
             continue
         m = ITEM_RE.match(line)
         if m:
-            t, summary, source, url, tags = m.groups()
+            t, summary, source, url, rest = m.groups()
+            rest = rest or ''
+            tags_raw, sep, take_raw = rest.partition('｜')
+            take = ''
+            if rest.strip().startswith('评述：'):
+                take = rest.strip()[3:].strip()
+                tags_raw = ''
+            elif sep and take_raw.strip().startswith('评述：'):
+                take = take_raw.strip()[3:].strip()
             sections[cur].append({
                 'title': t.strip(),
                 'summary': summary.strip(),
                 'source': source.strip(),
                 'url': url.strip(),
-                'tags': [x.strip() for x in (tags or '').split(',') if x.strip()],
+                'tags': [x.strip() for x in tags_raw.split(',') if x.strip()],
+                'take': take,
             })
         elif line.startswith('- ') and cur == '值得追问的线索':
             sections[cur].append({'clue': line[2:].strip()})
@@ -136,13 +145,15 @@ def main():
                         f'<button class="tag" data-tag="{esc(t)}">{esc(t)}</button>' for t in it['tags']
                     )
                     tag_attr = ','.join(it['tags'])
-                    search_blob = esc(' '.join([it['title'], it['summary'], it['source'], tag_attr]))
+                    search_blob = esc(' '.join([it['title'], it['summary'], it['source'], tag_attr, it.get('take', '')]))
+                    take_html = f'<p class="take"><b>评注</b>{esc(it["take"])}</p>' if it.get('take') else ''
                     col.append(
                         f'<li class="item" id="{anchor}" data-sec="{esc(sec)}" data-tags="{esc(tag_attr)}" '
                         f'data-search="{search_blob}">'
                         f'<div class="item-head"><a class="item-title" href="{esc(it["url"])}" target="_blank" rel="noopener">{esc(it["title"])}</a>'
                         f'<a class="anchor" href="#{anchor}" title="复制本条链接">#</a></div>'
                         f'<p class="summary">{esc(it["summary"])}</p>'
+                        f'{take_html}'
                         f'<div class="meta"><span class="src">{esc(it["source"])}</span>'
                         f'<a class="orig" href="{esc(it["url"])}" target="_blank" rel="noopener">阅读原文 ↗</a>'
                         f'{f"<span class=\"tags\">{tag_html}</span>" if tag_html else ""}</div>'
@@ -278,6 +289,9 @@ header.masthead {{
   padding: 9px 0 7px; margin: 22px 0 14px; text-align: center;
 }}
 .clue-list li {{ font-size: 13.5px; color: var(--ink); opacity: .88; margin: 0 0 7px 20px; list-style: '→  '; }}
+
+.take {{ margin: 8px 0 0; padding: 6px 10px 7px; border-left: 3px solid var(--accent); font-size: 13.5px; font-style: italic; line-height: 1.65; color: var(--ink); opacity: .92; background: rgba(176,58,46,.05); }}
+.take b {{ font-style: normal; font-size: 11px; letter-spacing: 2px; color: var(--accent); margin-right: 8px; }}
 
 .cols {{ display: grid; grid-template-columns: 1fr 1fr; align-items: start; }}
 .col-pol {{ padding-right: 26px; border-right: 3px double var(--line); }}
