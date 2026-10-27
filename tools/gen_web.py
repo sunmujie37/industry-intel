@@ -30,8 +30,8 @@ SECTION_COLORS = {
     '值得追问的线索': '#6B4FA0',
 }
 BOARDS = [
-    ('板块一 · 全球政经速递', ['全球政经']),
-    ('板块二 · 行业动态情报', ['半导体', '光通信', '物理AI', 'AI算力与资本']),
+    ('全球政经速递', ['全球政经']),
+    ('行业动态情报', ['半导体', '光通信', '物理AI', 'AI算力与资本']),
 ]
 
 ITEM_RE = re.compile(r'^- \*\*(.+?)\*\*｜(.*?)｜(.*?)｜(\S+)(?:｜(.*))?$')
@@ -116,18 +116,19 @@ def main():
                 body.append(f'<li>{esc(h)}</li>')
             body.append('</ul></section>')
 
+        board_cols = []
         for board_name, board_secs in BOARDS:
             board_parts = [(s, d['sections'].get(s)) for s in board_secs]
             board_parts = [(s, its) for s, its in board_parts if its]
             if not board_parts:
                 continue
-            body.append(f'<div class="board-banner">{esc(board_name)}</div>')
+            col = [f'<div class="board-banner">{esc(board_name)}</div>']
             for sec, items in board_parts:
                 color = SECTION_COLORS.get(sec, '#333')
-                body.append(f'<section class="block" data-sec="{esc(sec)}">')
-                body.append(f'<h3 style="color:{color};border-color:{color}">{esc(sec)}'
+                col.append(f'<section class="block" data-sec="{esc(sec)}">')
+                col.append(f'<h3 style="color:{color};border-color:{color}">{esc(sec)}'
                             f'<span class="sec-count">{len(items)}</span></h3>')
-                body.append('<ul class="items">')
+                col.append('<ul class="items">')
                 for i, it in enumerate(items):
                     total_items += 1
                     anchor = f'd-{d["date"]}-{sec}-{i}'
@@ -136,7 +137,7 @@ def main():
                     )
                     tag_attr = ','.join(it['tags'])
                     search_blob = esc(' '.join([it['title'], it['summary'], it['source'], tag_attr]))
-                    body.append(
+                    col.append(
                         f'<li class="item" id="{anchor}" data-sec="{esc(sec)}" data-tags="{esc(tag_attr)}" '
                         f'data-search="{search_blob}">'
                         f'<div class="item-head"><a class="item-title" href="{esc(it["url"])}" target="_blank" rel="noopener">{esc(it["title"])}</a>'
@@ -149,7 +150,16 @@ def main():
                     )
                     if is_today or len(rss_items) < 40:
                         rss_items.append((d, it))
-                body.append('</ul></section>')
+                col.append('</ul></section>')
+            board_cols.append(col)
+        if len(board_cols) == 2:
+            body.append('<div class="cols">')
+            body.append('<div class="col col-pol">' + ''.join(board_cols[0]) + '</div>')
+            body.append('<div class="col col-ind">' + ''.join(board_cols[1]) + '</div>')
+            body.append('</div>')
+        else:
+            for col in board_cols:
+                body.extend(col)
         # 值得追问的线索：纯文本列表，无链接
         clues = [c['clue'] for c in d['sections'].get('值得追问的线索', []) if 'clue' in c]
         if clues:
@@ -266,6 +276,10 @@ header.masthead {{
 }}
 .clue-list li {{ font-size: 13.5px; color: var(--ink); opacity: .88; margin: 0 0 7px 20px; list-style: '→  '; }}
 
+.cols {{ display: grid; grid-template-columns: 1fr 1fr; align-items: start; }}
+.col-pol {{ padding-right: 26px; border-right: 3px double var(--line); }}
+.col-ind {{ padding-left: 26px; }}
+
 article.day {{
   background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
   padding: 24px 26px; margin-bottom: 28px; box-shadow: 0 2px 10px var(--shadow);
@@ -318,6 +332,11 @@ footer {{ text-align: center; font-size: 12px; color: var(--muted); margin-top: 
 .result-empty {{ display:none; text-align:center; color:var(--muted); padding: 30px 0; }}
 .result-empty.show {{ display:block; }}
 .day.dimmed {{ display: none; }}
+@media (max-width: 920px) {{
+  .cols {{ grid-template-columns: 1fr; }}
+  .col-pol {{ padding-right: 0; border-right: none; border-bottom: 3px double var(--line); padding-bottom: 16px; margin-bottom: 18px; }}
+  .col-ind {{ padding-left: 0; }}
+}}
 @media (max-width: 600px) {{
   .page {{ padding: 20px 12px 60px; }}
   .masthead h1 {{ font-size: 23px; }}
