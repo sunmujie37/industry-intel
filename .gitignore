@@ -1,3 +1,4 @@
+.github/
 CNAME
 *.pyc
 __pycache__/
