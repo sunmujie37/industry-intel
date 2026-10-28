@@ -26,7 +26,7 @@ body {
   font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", Georgia, serif;
   line-height: 1.75; -webkit-font-smoothing: antialiased;
 }
-.page { max-width: 1240px; margin: 0 auto; padding: 32px 26px 80px; }
+.page { max-width: 1440px; margin: 0 auto; padding: 32px 26px 80px; }
 header.masthead {
   border-bottom: 3px double var(--accent); padding-bottom: 14px; margin-bottom: 8px;
 }
@@ -101,7 +101,7 @@ header.masthead {
 .take { margin: 8px 0 0; padding: 6px 10px 7px; border-left: 3px solid var(--accent); font-size: 13.5px; font-style: italic; line-height: 1.65; color: var(--ink); opacity: .92; background: rgba(176,58,46,.05); }
 .take b { font-style: normal; font-size: 11px; letter-spacing: 2px; color: var(--accent); margin-right: 8px; }
 
-.cols { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+.cols { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: start; }
 .col-pol { padding-right: 26px; border-right: 3px double var(--line); }
 .col-ind { padding-left: 26px; }
 
@@ -122,6 +122,7 @@ header.masthead {
 article.day {
   background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
   padding: 24px 26px; margin-bottom: 28px; box-shadow: 0 2px 10px var(--shadow);
+  overflow-wrap: anywhere; word-break: break-word; min-width: 0;
 }
 .day-header {
   border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 14px;
@@ -160,11 +161,11 @@ a.item-title { font-size: 15.5px; font-weight: 700; color: var(--ink); text-deco
 a.item-title:hover { color: var(--accent); text-decoration: underline; }
 a.anchor { color: var(--muted); text-decoration: none; font-size: 12px; opacity: 0; transition: opacity .15s; }
 li.item:hover a.anchor { opacity: 1; }
-.summary { font-size: 14px; color: var(--ink); opacity: .92; margin: 6px 0; }
+.summary { font-size: 14px; color: var(--ink); opacity: .92; margin: 6px 0; overflow-wrap: anywhere; }
 .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12.5px;
-  font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif; overflow-wrap: anywhere; }
 .src { color: var(--muted); }
-a.orig { color: var(--accent); text-decoration: none; }
+a.orig { color: var(--accent); text-decoration: none; word-break: break-all; }
 a.orig:hover { text-decoration: underline; }
 footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 24px;
   font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
@@ -235,7 +236,7 @@ footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 2
 
   <footer>
     行业情报日报 · 由 Kimi Claw 自动采集生成 · 仅基于公开信息，不构成投资建议<br>
-    生成时间 2026-10-28 09:22（Asia/Shanghai） · <a href="feed.xml" style="color:var(--accent)">RSS订阅</a>
+    生成时间 2026-10-28 10:21（Asia/Shanghai） · <a href="feed.xml" style="color:var(--accent)">RSS订阅</a>
   </footer>
 </div>
 
