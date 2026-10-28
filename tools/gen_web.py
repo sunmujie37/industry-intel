@@ -49,7 +49,12 @@ def parse_day(md_path):
             title = m.group(1).strip()
             continue
         if line.startswith('## '):
-            cur = line[3:].strip()
+            raw = line[3:].strip()
+            cur = raw
+            for s in SECTIONS:
+                if raw == s or raw.startswith(s) or s.startswith(raw):
+                    cur = s
+                    break
             if cur != '今日要点':
                 sections.setdefault(cur, [])
             continue
